@@ -1,50 +1,189 @@
-# Welcome to your Expo app 👋
+# StudyCrew Mobile App 📱
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> A beautiful, organized React Native mobile application for connecting students with study assistants.
 
-## Get started
+## ✨ Features
 
-1. Install dependencies
+- 🎨 **Beautiful Home Page** - Modern UI with smooth animations
+- 📁 **Organized Structure** - Professional folder organization for scalability
+- 🚀 **Easy Navigation** - File-based routing with Expo Router
+- 📱 **Cross-Platform** - Works on iOS, Android, and Web
+- 🎯 **User-Friendly** - Intuitive interface designed for students
 
-   ```bash
-   npm install
-   ```
+## 🚀 Quick Start
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+### 1. Install Dependencies
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Start Development Server
+```bash
+npm start
+```
 
-## Learn more
+### 3. Run on Device/Simulator
+- **Expo Go (Phone)**: Scan QR code with Expo Go app
+- **iOS Simulator**: Press `i` in terminal or run `npm run ios`
+- **Android Emulator**: Press `a` in terminal or run `npm run android`
+- **Web Browser**: Press `w` in terminal or run `npm run web`
 
-To learn more about developing your project with Expo, look at the following resources:
+## 📁 Project Structure
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+Study-crew-mob/
+├── app/                      # Main application (Expo Router)
+│   ├── index.tsx            # Entry point (redirects to home)
+│   ├── _layout.tsx          # Navigation configuration
+│   │
+│   ├── home/                # ✅ Home page module
+│   │   └── index.tsx       # Complete home page
+│   │
+│   ├── auth/                # 🔜 Authentication pages
+│   ├── profile/             # 🔜 User profile pages
+│   ├── courses/             # 🔜 Courses module
+│   └── sessions/            # 🔜 Study sessions module
+│
+├── components/              # Reusable UI components
+├── services/                # API services
+└── Documentation/
+    ├── SETUP_COMPLETE.md   # Setup summary
+    ├── PROJECT_STRUCTURE.md # Full documentation
+    ├── QUICK_GUIDE.md      # Quick reference
+    └── HOME_PAGE_README.md # Home page details
+```
 
-## Join the community
+## 📖 Documentation
 
-Join our community of developers creating universal apps.
+- **[SETUP_COMPLETE.md](./SETUP_COMPLETE.md)** - Overview of what's been set up
+- **[PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)** - Complete project structure and design system
+- **[QUICK_GUIDE.md](./QUICK_GUIDE.md)** - Quick reference for adding new pages
+- **[HOME_PAGE_README.md](./HOME_PAGE_README.md)** - Home page documentation
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 🎨 Design System
+
+### Colors
+- **Primary Green**: `#8fc95d`
+- **Text Dark**: `#1f2937`
+- **Text Gray**: `#6b7280`
+- **Background**: `#ffffff`
+- **Background Light**: `#f8fdf5`
+
+### Key Features
+- Smooth animations and transitions
+- Platform-specific shadows (iOS/Android)
+- Responsive layouts
+- Modern, clean design
+
+## 🛠️ Tech Stack
+
+- **React Native** - Mobile framework
+- **Expo** - Development platform
+- **Expo Router** - File-based navigation
+- **TypeScript** - Type safety
+- **expo-linear-gradient** - Gradient backgrounds
+- **React Native Reanimated** - Advanced animations
+
+## 📱 Current Pages
+
+### ✅ Home Page (`/home`)
+- Hero section with animated blobs
+- "I need an assistant" card
+- "I'm here to assist" card
+- Feature tags and descriptions
+- Smooth entrance animations
+
+### 🔜 Coming Soon
+- Login/Signup pages
+- User profile
+- Courses browsing
+- Assistant listings
+- Study sessions
+
+## 🔧 Adding New Pages
+
+1. Create a file in `app/` directory:
+   ```
+   app/auth/login.tsx
+   ```
+
+2. Use the template from `QUICK_GUIDE.md`
+
+3. Navigate to it:
+   ```typescript
+   router.push('/auth/login');
+   ```
+
+See **[QUICK_GUIDE.md](./QUICK_GUIDE.md)** for detailed examples.
+
+## 📦 Available Scripts
+
+```bash
+# Start development server
+npm start
+
+# Run on iOS
+npm run ios
+
+# Run on Android
+npm run android
+
+# Run on web
+npm run web
+
+# Lint code
+npm run lint
+
+# Clear cache and restart
+npm start --clear
+```
+
+## 🎯 Navigation Flow
+
+```
+App Launch (index.tsx)
+    ↓
+Automatic Redirect
+    ↓
+Home Page (/home) ✅
+```
+
+## 🐛 Troubleshooting
+
+### White screen on launch?
+```bash
+npm start --clear
+```
+
+### Navigation not working?
+- Ensure files are in `app/` directory
+- Use `useRouter` from `expo-router`
+
+### Styles not applying?
+- Check StyleSheet syntax
+- Verify color values
+
+## 📚 Learn More
+
+- [Expo Documentation](https://docs.expo.dev/)
+- [Expo Router](https://docs.expo.dev/router/introduction/)
+- [React Native](https://reactnative.dev/)
+
+## 🤝 Contributing
+
+This is a student project for BITS Academic Excellence. Follow the established design system and folder structure when adding new features.
+
+## 📄 License
+
+This project is part of the StudyCrew platform.
+
+---
+
+**Status**: ✅ Home Page Complete  
+**Next**: Authentication Pages  
+**Version**: 1.0.0  
+**Last Updated**: January 29, 2026
+
+---
+
+Made with ❤️ for BITS Students
