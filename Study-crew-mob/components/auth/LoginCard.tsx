@@ -14,6 +14,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../context/AuthContext';
 import { useAuthModal } from '../context/AuthModalContext';
+import { useRouter } from 'expo-router';
 
 interface LoginCardProps {
   onClose: () => void;
@@ -24,6 +25,7 @@ const { width } = Dimensions.get('window');
 export default function LoginCard({ onClose }: LoginCardProps) {
   const { login, loading, error, clearError } = useAuth();
   const { intent } = useAuthModal();
+  const router = useRouter();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,8 +41,9 @@ export default function LoginCard({ onClose }: LoginCardProps) {
     
     if (success) {
       onClose();
-      // TODO: Navigate to dashboard based on intent when created
-      Alert.alert('Success', 'Login successful!');
+      // Navigate to user dashboard for now
+      // TODO: Navigate based on intent when assistant dashboard is created
+      router.replace('/dashboard/user');
     } else {
       Alert.alert('Login Failed', error || 'Invalid credentials');
     }
