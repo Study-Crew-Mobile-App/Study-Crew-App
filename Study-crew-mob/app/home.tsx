@@ -12,11 +12,13 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
+import { useAuthModal } from '../components/context/AuthModalContext';
 
 const { width } = Dimensions.get('window');
 
 export default function HomePage() {
   const router = useRouter();
+  const { openModal } = useAuthModal();
   
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -55,14 +57,12 @@ export default function HomePage() {
 
   const handleNeedHelp = () => {
     console.log('Need Help - Opening login modal for user');
-    // TODO: Navigate to login screen with user role
-    // router.push('/auth/login?role=user');
+    openModal('login', 'user');
   };
 
   const handleBecomeAssistant = () => {
     console.log('Become Assistant - Opening login modal for assistant');
-    // TODO: Navigate to login screen with assistant role
-    // router.push('/auth/login?role=assistant');
+    openModal('login', 'assistant');
   };
 
   return (
