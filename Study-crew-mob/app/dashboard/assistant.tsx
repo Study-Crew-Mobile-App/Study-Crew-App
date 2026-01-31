@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../components/context/AuthContext';
+import { coursesApi, assistantApi } from '../../services/api';
 import AssistantCourseCard from '../../components/courses/AssistantCourseCard';
 import YearSelector from '../../components/courses/YearSelector';
 
@@ -84,61 +85,51 @@ export default function AssistantDashboard() {
     setLoading(true);
     setError(null);
 
-    // TODO: Replace with actual API call
-    // For now, use mock data
-    setTimeout(() => {
-      const mockCourses: Course[] = [
-        {
-          code: 'CS101',
-          name: 'Introduction to Computer Science',
-          description: 'Fundamentals of programming and computer science concepts',
-          credit_hour: 3,
-          year: YEARS.find((y) => y.value === openYear)?.label || 'Freshman',
-          semester: SEMESTERS.indexOf(openSemester) + 1,
-        },
-        {
-          code: 'MATH101',
-          name: 'Calculus I',
-          description: 'Differential and integral calculus',
-          credit_hour: 4,
-          year: YEARS.find((y) => y.value === openYear)?.label || 'Freshman',
-          semester: SEMESTERS.indexOf(openSemester) + 1,
-        },
-        {
-          code: 'PHYS101',
-          name: 'Physics I',
-          description: 'Mechanics and thermodynamics',
-          credit_hour: 3,
-          year: YEARS.find((y) => y.value === openYear)?.label || 'Freshman',
-          semester: SEMESTERS.indexOf(openSemester) + 1,
-        },
-        {
-          code: 'CHEM101',
-          name: 'General Chemistry',
-          description: 'Introduction to chemistry principles',
-          credit_hour: 3,
-          year: YEARS.find((y) => y.value === openYear)?.label || 'Freshman',
-          semester: SEMESTERS.indexOf(openSemester) + 1,
-        },
-      ];
+    const loadCourses = async () => {
+      try {
+        const response = await coursesApi.getCourses(openYear, openSemester);
+        
+        if (response.error) {
+          setError(response.error);
+        } else if (response.data) {
+          setCourses(response.data);
+        }
+      } catch (error: any) {
+        setError(error.message || 'Failed to load courses');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      setCourses(mockCourses);
-      setLoading(false);
-    }, 1000);
+    loadCourses();
   }, [openYear, openSemester]);
 
   // Fetch assigned courses for the current user
   useEffect(() => {
     if (!user?.id) return;
 
-    // TODO: Replace with actual API call
-    // For now, simulate some assigned courses
-    const mockAssignedCourses = ['CS101', 'MATH101'];
-    setAssignedCourses(new Set(mockAssignedCourses));
-    setSelectedCourses(new Set(mockAssignedCourses));
-    
-    const mockSpecialCourses = ['CS101'];
-    setSpecialCourses(new Set(mockSpecialCourses));
+    const loadAssignedCourses = async () => {
+      try {
+        const response = await assistantApi.getAssignedCourses(user!.id);
+        
+        if (response.error) {
+          console.error('Failed to load assigned courses:', response.error);
+        } else if (response.data) {
+          const assignedCourseCodes = response.data.map((course: any) => course.code);
+          const specialCourseCodes = response.data
+            .filter((course: any) => course.is_special)
+            .map((course: any) => course.code);
+          
+          setAssignedCourses(new Set(assignedCourseCodes));
+          setSelectedCourses(new Set(assignedCourseCodes));
+          setSpecialCourses(new Set(specialCourseCodes));
+        }
+      } catch (error: any) {
+        console.error('Error loading assigned courses:', error);
+      }
+    };
+
+    loadAssignedCourses();
   }, [user?.id]);
 
   const toggleCourse = (code: string) => {
@@ -163,12 +154,28 @@ export default function AssistantDashboard() {
 
   const handleUpdateCourses = async () => {
     try {
-      // TODO: Replace with actual API call
-      // For now, simulate successful update
+      if (!user?.id) {
+        throw new Error('User not found');
+      }
+
+      const courseCodes = Array.from(selectedCourses);
+      const specialCourseCodes = Array.from(specialCourses);
+
+      const response = await assistantApi.updateCourses({
+        assistant_id: user.id,
+        course_ids: courseCodes,
+        special_course_codes: specialCourseCodes,
+        availability_updates: [], // TODO: Implement availability updates if needed
+      });
+
+      if (response.error) {
+        throw new Error(response.error);
+      }
+
       const addedCount = selectedCourses.size - assignedCourses.size;
       const removedCount = Math.max(0, assignedCourses.size - selectedCourses.size);
-      const specialAddedCount = specialCourses.size;
-      const specialRemovedCount = 0; // Simulate
+      const specialAddedCount = specialCourses.size - Array.from(assignedCourses).filter(code => specialCourses.has(code)).length;
+      const specialRemovedCount = 0; // Calculate if needed
 
       let message = `Courses updated successfully! Added ${addedCount} courses, removed ${removedCount} courses.`;
 

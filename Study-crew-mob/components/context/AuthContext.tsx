@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authApi, apiClient } from '../../services/api';
 
 interface User {
   id: number;
@@ -77,26 +78,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
     
     try {
-      // TODO: Replace with actual API call
-      // For now, simulate successful login
-      const mockUser: User = {
-        id: 1,
-        name: 'Test User',
-        email: email,
-        academic_year: 2,
-        role: email.includes('assistant') ? 'assistant' : 'user'
-      };
+      const response = await authApi.login(email, password);
       
-      const mockToken = 'mock_jwt_token_' + Date.now();
+      if (response.error) {
+        setError(response.error);
+        return false;
+      }
       
-      // Store auth data
-      await AsyncStorage.setItem('auth_token', mockToken);
-      await AsyncStorage.setItem('auth_user', JSON.stringify(mockUser));
+      if (response.data?.token && response.data?.user) {
+        const { token, user } = response.data;
+        
+        // Store auth data
+        await AsyncStorage.setItem('auth_token', token);
+        await AsyncStorage.setItem('auth_user', JSON.stringify(user));
+        
+        // Set API client token
+        apiClient.setToken(token);
+        
+        setToken(token);
+        setUser(user);
+        
+        return true;
+      }
       
-      setToken(mockToken);
-      setUser(mockUser);
-      
-      return true;
+      setError('Invalid response from server');
+      return false;
     } catch (error: any) {
       setError(error.message || 'Login failed');
       return false;
@@ -110,28 +116,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
     
     try {
-      // TODO: Replace with actual API call
-      // For now, simulate successful registration
-      const mockUser: User = {
-        id: Date.now(),
-        name: userData.name,
-        email: userData.email,
-        academic_year: userData.academic_year,
-        telegram_username: userData.telegram_username,
-        bio: userData.bio,
-        role: userData.academic_year >= 2 ? 'assistant' : 'user'
-      };
+      const response = await authApi.register(userData);
       
-      const mockToken = 'mock_jwt_token_' + Date.now();
+      if (response.error) {
+        setError(response.error);
+        return false;
+      }
       
-      // Store auth data
-      await AsyncStorage.setItem('auth_token', mockToken);
-      await AsyncStorage.setItem('auth_user', JSON.stringify(mockUser));
+      if (response.data?.token && response.data?.user) {
+        const { token, user } = response.data;
+        
+        // Store auth data
+        await AsyncStorage.setItem('auth_token', token);
+        await AsyncStorage.setItem('auth_user', JSON.stringify(user));
+        
+        // Set API client token
+        apiClient.setToken(token);
+        
+        setToken(token);
+        setUser(user);
+        
+        return true;
+      }
       
-      setToken(mockToken);
-      setUser(mockUser);
-      
-      return true;
+      setError('Invalid response from server');
+      return false;
     } catch (error: any) {
       setError(error.message || 'Registration failed');
       return false;
@@ -142,13 +151,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     try {
+      // Call logout API
+      await authApi.logout();
+    } catch (error) {
+      console.error('Error during logout API call:', error);
+    }
+    
+    try {
       await AsyncStorage.removeItem('auth_token');
       await AsyncStorage.removeItem('auth_user');
+      apiClient.clearToken();
       setToken(null);
       setUser(null);
       setError(null);
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error('Error during logout cleanup:', error);
     }
   };
 

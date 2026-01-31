@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../components/context/AuthContext';
+import { coursesApi } from '../../services/api';
 import CourseCard from '../../components/courses/CourseCard';
 import CourseModal from '../../components/courses/CourseModal';
 import YearSelector from '../../components/courses/YearSelector';
@@ -69,46 +70,23 @@ export default function UserDashboard() {
     setLoading(true);
     setError(null);
 
-    // TODO: Replace with actual API call
-    // For now, use mock data
-    setTimeout(() => {
-      const mockCourses: Course[] = [
-        {
-          code: 'CS101',
-          name: 'Introduction to Computer Science',
-          description: 'Fundamentals of programming and computer science concepts',
-          credit_hour: 3,
-          year: YEARS.find((y) => y.value === openYear)?.label || 'Freshman',
-          semester: SEMESTERS.indexOf(openSemester) + 1,
-        },
-        {
-          code: 'MATH101',
-          name: 'Calculus I',
-          description: 'Differential and integral calculus',
-          credit_hour: 4,
-          year: YEARS.find((y) => y.value === openYear)?.label || 'Freshman',
-          semester: SEMESTERS.indexOf(openSemester) + 1,
-        },
-        {
-          code: 'PHYS101',
-          name: 'Physics I',
-          description: 'Mechanics and thermodynamics',
-          credit_hour: 3,
-          year: YEARS.find((y) => y.value === openYear)?.label || 'Freshman',
-          semester: SEMESTERS.indexOf(openSemester) + 1,
-        },
-      ];
+    const loadCourses = async () => {
+      try {
+        const response = await coursesApi.getCourses(openYear, openSemester);
+        
+        if (response.error) {
+          setError(response.error);
+        } else if (response.data) {
+          setCourses(response.data);
+        }
+      } catch (error: any) {
+        setError(error.message || 'Failed to load courses');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      // Filter courses based on selected year and semester
-      const filteredCourses = mockCourses.filter(
-        (course) =>
-          course.year === YEARS.find((y) => y.value === openYear)?.label &&
-          course.semester === SEMESTERS.indexOf(openSemester) + 1
-      );
-
-      setCourses(filteredCourses);
-      setLoading(false);
-    }, 1000);
+    loadCourses();
   }, [openYear, openSemester]);
 
   const filteredCourses = courses.filter(

@@ -9,9 +9,10 @@ import {
   Dimensions,
   ActivityIndicator,
   Alert,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Platform } from 'react-native';
+import { coursesApi } from '../../services/api';
 
 const { width, height } = Dimensions.get('window');
 
@@ -45,39 +46,21 @@ export default function CourseModal({ courseCode, isOpen, onClose }: CourseModal
     setLoading(true);
     setError(null);
 
-    // TODO: Replace with actual API call
-    // For now, use mock data
-    setTimeout(() => {
-      const mockAssistants: Assistant[] = [
-        {
-          id: 1,
-          name: 'John Doe',
-          email: 'john.doe@bits.edu',
-          rating: 4.8,
-          bio: 'Computer Science major with 3 years of tutoring experience',
-          courses: [courseCode || ''],
-        },
-        {
-          id: 2,
-          name: 'Jane Smith',
-          email: 'jane.smith@bits.edu',
-          rating: 4.9,
-          bio: 'Mathematics enthusiast, love helping students understand complex concepts',
-          courses: [courseCode || ''],
-        },
-        {
-          id: 3,
-          name: 'Mike Johnson',
-          email: 'mike.johnson@bits.edu',
-          rating: 4.7,
-          bio: 'Physics graduate student, passionate about teaching',
-          courses: [courseCode || ''],
-        },
-      ];
-
-      setAssistants(mockAssistants);
+    try {
+      if (!courseCode) return;
+      
+      const response = await coursesApi.getAssistantsForCourse(courseCode);
+      
+      if (response.error) {
+        setError(response.error);
+      } else if (response.data) {
+        setAssistants(response.data);
+      }
+    } catch (error: any) {
+      setError(error.message || 'Failed to load assistants');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const handleAssistantPress = (assistant: Assistant) => {
