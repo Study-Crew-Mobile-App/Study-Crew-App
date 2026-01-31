@@ -19,6 +19,7 @@ export default function RootLayout() {
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="home" options={{ headerShown: false }} />
           <Stack.Screen name="dashboard/user" options={{ headerShown: false }} />
+          <Stack.Screen name="dashboard/assistant" options={{ headerShown: false }} />
           <Stack.Screen name="auth/login" options={{ headerShown: false }} />
           <Stack.Screen name="auth/register" options={{ headerShown: false }} />
           {/* Add more screens here as you build them */}

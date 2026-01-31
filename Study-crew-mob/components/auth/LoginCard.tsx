@@ -41,9 +41,12 @@ export default function LoginCard({ onClose }: LoginCardProps) {
     
     if (success) {
       onClose();
-      // Navigate to user dashboard for now
-      // TODO: Navigate based on intent when assistant dashboard is created
-      router.replace('/dashboard/user');
+      // Navigate based on role
+      if (intent === 'assistant' || email.includes('assistant')) {
+        router.replace('/dashboard/assistant');
+      } else {
+        router.replace('/dashboard/user');
+      }
     } else {
       Alert.alert('Login Failed', error || 'Invalid credentials');
     }
