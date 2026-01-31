@@ -24,7 +24,7 @@ const { width } = Dimensions.get('window');
 
 export default function LoginCard({ onClose }: LoginCardProps) {
   const { login, loading, error, clearError } = useAuth();
-  const { intent } = useAuthModal();
+  const { switchModal, intent } = useAuthModal();
   const router = useRouter();
   
   const [email, setEmail] = useState('');
@@ -53,9 +53,8 @@ export default function LoginCard({ onClose }: LoginCardProps) {
   };
 
   const handleRegister = () => {
-    // This will be handled by the parent modal
-    // For now, just close and the modal will switch
-    onClose();
+    // Switch to registration modal
+    switchModal('register');
   };
 
   return (

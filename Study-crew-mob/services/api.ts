@@ -97,8 +97,9 @@ export const apiClient = new ApiClient();
 // Auth services
 export const authApi = {
   login: async (email: string, password: string) => {
-    return apiClient.post('/users/sign_in', {
-      user: { email, password },
+    return apiClient.post('/login', {
+      email,
+      password,
     });
   },
 
@@ -109,7 +110,7 @@ export const authApi = {
   },
 
   logout: () => {
-    return apiClient.delete('/users/sign_out');
+    return apiClient.delete('/logout');
   },
 
   getCurrentUser: () => {

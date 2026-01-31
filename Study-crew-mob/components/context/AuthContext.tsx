@@ -85,17 +85,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return false;
       }
       
-      if (response.data?.token && response.data?.user) {
-        const { token, user } = response.data;
+      if (response.data?.user) {
+        const user = response.data.user;
         
-        // Store auth data
-        await AsyncStorage.setItem('auth_token', token);
+        // Store user data (session-based auth, no token needed)
         await AsyncStorage.setItem('auth_user', JSON.stringify(user));
         
-        // Set API client token
-        apiClient.setToken(token);
-        
-        setToken(token);
         setUser(user);
         
         return true;
@@ -123,17 +118,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return false;
       }
       
-      if (response.data?.token && response.data?.user) {
-        const { token, user } = response.data;
+      if (response.data) {
+        const user = response.data;
         
-        // Store auth data
-        await AsyncStorage.setItem('auth_token', token);
+        // Store user data (session-based auth, no token needed)
         await AsyncStorage.setItem('auth_user', JSON.stringify(user));
         
-        // Set API client token
-        apiClient.setToken(token);
-        
-        setToken(token);
         setUser(user);
         
         return true;

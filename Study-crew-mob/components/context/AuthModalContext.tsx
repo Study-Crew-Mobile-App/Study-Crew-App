@@ -9,6 +9,7 @@ interface AuthModalContextValue {
   intent: AuthIntent;
   openModal: (type: ModalType, intent?: AuthIntent) => void;
   closeModal: () => void;
+  switchModal: (newType: ModalType) => void;
 }
 
 const AuthModalContext = createContext<AuthModalContextValue | undefined>(undefined);
@@ -30,8 +31,12 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
     setIntent(null);
   };
 
+  const switchModal = (newType: ModalType) => {
+    setType(newType);
+  };
+
   return (
-    <AuthModalContext.Provider value={{ open, type, intent, openModal, closeModal }}>
+    <AuthModalContext.Provider value={{ open, type, intent, openModal, closeModal, switchModal }}>
       {children}
     </AuthModalContext.Provider>
   );

@@ -32,6 +32,7 @@ interface FormData {
 
 export default function RegisterCard({ onClose }: RegisterCardProps) {
   const { register, loading, error, clearError } = useAuth();
+  const { switchModal } = useAuthModal();
   
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -76,8 +77,8 @@ export default function RegisterCard({ onClose }: RegisterCardProps) {
   };
 
   const handleLogin = () => {
-    // This will be handled by the parent modal
-    onClose();
+    // Switch to login modal
+    switchModal('login');
   };
 
   const academicYears = [
