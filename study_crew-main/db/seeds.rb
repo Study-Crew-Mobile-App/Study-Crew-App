@@ -8,6 +8,44 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+# Create test users
+[
+  {
+    name: 'Test Student',
+    email: 'student@test.com',
+    password: 'password123',
+    password_confirmation: 'password123',
+    role: 'student',
+    academic_year: 2,
+    telegram_username: 'teststudent',
+    bio: 'Test student account for mobile app testing'
+  },
+  {
+    name: 'Test Assistant',
+    email: 'assistant@test.com',
+    password: 'password123',
+    password_confirmation: 'password123',
+    role: 'assistant',
+    academic_year: 3,
+    telegram_username: 'testassistant',
+    bio: 'Test assistant account for mobile app testing'
+  },
+  {
+    name: 'Mahlet Addisu',
+    email: 'mahletaddisu123@gmail.com',
+    password: 'password123',
+    password_confirmation: 'password123',
+    role: 'assistant',
+    academic_year: 3,
+    telegram_username: 'mahlet_assistant',
+    bio: 'Software Engineering student and teaching assistant'
+  }
+].each do |user_attrs|
+  User.find_or_create_by!(email: user_attrs[:email]) do |user|
+    user.assign_attributes(user_attrs)
+  end
+end
+
 # Comprehensive course list
 [
   { name: 'Introduction to Programming', code: 'SE101', credit_hour: 3, year: 'Freshman', semester: 1, description: 'Fundamentals of programming using a high-level language.', created_at: '2025-07-05 15:33:47', updated_at: '2025-07-05 15:33:47' },
